@@ -305,6 +305,8 @@ int main() {
             case 7:
                 obj.del_at();
                 break;
+
+            default: cout<<"\n Choose a Valid Option.";
         }
 
         cout << "\n Menu?(y/n)";
