@@ -1,4 +1,5 @@
 #include <iostream>
+using  namespace std;
 
 class linkedlist
 {
@@ -14,14 +15,15 @@ public:
 
     linkedlist()
     {
-        head->next = NULL;
+        head = NULL; 
     }
 
-    void insert();
+    void insert_end();
+    void insert_begin();
     void traverse();
 };
 
-void linkedlist::insert()
+void linkedlist::insert_end()
 {
     char ans = 'y';
 
@@ -29,8 +31,8 @@ void linkedlist::insert()
 
      int val;
 
-     std::cout<<"\n Enter Value: ";
-     std::cin>>val;
+     cout<<"\n Enter Value: ";
+     cin>>val;
 
      node *ptr = new node;
      ptr->data = val;
@@ -44,9 +46,10 @@ void linkedlist::insert()
 
      else
      {
-         node *temp = head;
+         node *temp;
+         temp = head;
 
-         while(temp->next != NULL)
+         while(temp->next != NULL) //NOTE: pay attention to syntax
          {
              temp = temp->next;
          }
@@ -54,8 +57,15 @@ void linkedlist::insert()
          temp->next = ptr;
      }
 
-     std::cout<<"Add another? (y/n)";
-     std::cin>>ans;
+     cout<<"Add another? (y/n)";
+     cin>>ans;
+
+     while(isalpha(ans) != true)
+     {
+         cout<<"Enter a valid choice!"<<endl;
+         cout<<"Add another? (y/n)";
+         cin>>ans;
+     }
 
     }while(tolower(ans) == 'y');
 
@@ -65,38 +75,70 @@ void linkedlist::traverse()
 {
     node *temp = head;
 
-    while(temp->next != NULL)
+    while(temp != NULL) //NOTE: pay attention to the syntax here
     {
+        cout<<" "<<temp->data;
         temp = temp->next;
-        std::cout<<" "<<temp->data;
+
     }
 }
 
-int main()
-{
+void linkedlist::insert_begin() {
+
+    char ans = 'y';
+    do {
+        int val;
+        cout<<"\n Enter Value: ";
+        cin>>val;
+
+        node *ptr = new node;
+        ptr->data = val;
+
+        ptr->next = head;
+        head = ptr;
+
+        cout<<"Add another? (y/n)";
+        cin>>ans;
+
+        while(isalpha(ans) != true)
+        {
+            cout<<"Enter a valid choice!"<<endl;
+            cout<<"Add another? (y/n)";
+            cin>>ans;
+        }
+
+    }while (tolower(ans) == 'y');
+
+}
+
+int main() {
     linkedlist obj;
     char ans = 'y';
     int ch;
 
-    do
-    {
-        std::cout<<"\nMENU: \n1. Add Item \n2. Traverse. \n\nEnter your Choice: ";
-        std::cin>>ch;
+    do {
+        cout << "\nMENU: \n1. Add Item at end \n2. Traverse. \n3. Insert at beginning. \n\nEnter your Choice: ";
+        cin >> ch;
 
         switch (ch) {
 
-            case 1: obj.insert(); break;
+            case 1:
+                obj.insert_end();
+                break;
 
-            case 2: obj.traverse(); break;
+            case 2:
+                obj.traverse();
+                break;
 
+            case 3:
+                obj.insert_begin();
+                break;
         }
 
-        std::cout<<"\n Menu?(y/n)";
-        std::cin>>ans;
+        cout << "\n Menu?(y/n)";
+        cin >> ans;
 
-    }while (tolower(ans) == 'y');
+    } while (tolower(ans) == 'y');
 
     return 0;
 }
-
-
