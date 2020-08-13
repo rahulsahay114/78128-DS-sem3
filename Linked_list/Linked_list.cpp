@@ -25,7 +25,21 @@ public:
     void del_begin();
     void del_end();
     void del_at();
+    void reverse();
+    void search();
+    bool is_empty();
 };
+
+bool linkedlist::is_empty() {
+    if(head == NULL)
+    {
+        cout<<"List is empty.";
+        return true;
+    }
+
+    else
+        return false;
+}
 
 void linkedlist::insert_end()
 {
@@ -83,13 +97,17 @@ void linkedlist::traverse()
     node *temp = head; 
     //setting the 'temp' node to head. So that we can iterate from the first item to the last one.
 
+    if(is_empty())
+        return;
+
     while(temp != NULL) //NOTE: pay attention to the syntax here: 'temp!=NULL' will help us travel to the
-                        //last node and access it's value.
+        //last node and access it's value.
     {
         cout<<" "<<temp->data;
         temp = temp->next;
 
     }
+
 }
 
 void linkedlist::insert_begin() {
@@ -121,6 +139,9 @@ void linkedlist::insert_begin() {
 }
 
 void linkedlist::insert_at() {
+
+    if(is_empty())
+        return; //checking if empty
 
     int val, pos;
     cout<<"\n Enter Value: ";
@@ -169,10 +190,8 @@ void linkedlist::insert_at() {
 
 void linkedlist::del_begin() {
 
-    if(head == NULL)
-    {
-        cout<<"\n List is Empty!";
-    }
+    if(is_empty())
+        return;
 
     node *ptr;
     ptr = head; //bringing the temporary ptr (node) to the head so that we can free it and delete it.
@@ -186,6 +205,9 @@ void linkedlist::del_begin() {
 }
 
 void linkedlist::del_end() {
+
+    if(is_empty())
+        return;
 
     node *ptr;
     node *temp=head;
@@ -221,6 +243,9 @@ void linkedlist::del_end() {
 }
 
 void linkedlist::del_at() {
+
+    if(is_empty())
+        return;
 
     int pos;
     
@@ -265,7 +290,94 @@ void linkedlist::del_at() {
         
 }
 
+void linkedlist::reverse() {
+
+    if(is_empty())
+        return;
+
+    else if(head->next == NULL) //checking if only a single item in the list
+    {
+        cout<<"List Reversed!"; //the reverse of a list with a single item will be the same sas it's original.
+        return;
+    }
+
+    node *temp, *temp1;
+
+    temp = head; //setting temp to the first node, i.e head. It'll always in the back.
+    temp1 = temp->next; //temp1 set to the node next to 'temp' node. It'll always be in the front.
+
+    head = temp1->next;
+    /*setting the head to be in front of temp and temp1 (positions: temp, temp1, head)
+    if there are two items in the list, then 'head' will not have a 'temp1->next' to go to
+    so it could be set to NULL or some junk value.*/
+
+    temp->next = NULL;
+    /*the unreversed list's head will become the last node, and the last node's 'next' is always NULL, so
+     here we effectively set the  'next' of unreversed list's 'head' to NULL */
+
+    while(temp1->next != NULL) //making sure we exit the loop as soon as we reach the last node.
+    {
+        temp1->next = temp;
+        //setting the front node's 'next' to point to the back node. (reversing the links!)
+
+        temp = temp1;
+        //temp and temp1 now point to the same node.
+        //(positions: temp ->(a node)<- temp1 head -> (node ahead of the node temp&temp1 are at)
+
+        temp1 = head;
+        //moving temp1 to be in the front again.
+        //(positions: temp, temp1-> (a node) <- head)
+        //now the while loop will execute again, and head will be ahead of temp1.
+
+        head = temp1->next;
+        //setting the head to the node ahead of temp1. (i.e positions of nodes will be: temp, temp1, head)
+    }
+
+    head = temp1;
+
+    head->next = temp;
+    /* at the end of the loop, head's 'next' or is holding the address of the node next to it (in reverse order)
+     or some random junk value or set to NULL. So we set it back to temp1, ie last node of the unreversed list,
+     this is the last step to finally set the unreversed list's last node,
+     whose 'next' was NULL, so we set it to point to the second node of the reversed list, ie 'temp',
+     thus effectively becoming the 'head' node of the list*/
+
+    cout<<"List Reversed!";
+}
+
+void linkedlist::search() {
+
+    if(is_empty())
+        return;
+
+    int key, pos=-1, ctr=0;
+
+    cout<<"\n Enter Key to search for: ";
+    cin>>key;
+
+    node *temp = head;
+
+    while(temp!=NULL)
+    {
+        if(temp->data == key)
+        {
+            pos = ctr;
+        }
+        temp = temp->next;
+        ctr++;
+
+    }
+
+    if(pos != -1)
+    {
+        cout<<key<<" found at: "<<pos+1;
+    }
+    else
+        cout<<"Not Found.";
+}
+
 int main() {
+
     linkedlist obj;
     char ans = 'y';
     int ch;
@@ -273,7 +385,7 @@ int main() {
     do {
         cout << "\nMENU: \n1. Add Item at end \n2. Insert at beginning. \n3. Insert at a Location. "
                 "\n4. Traverse. \n5. Delete Node at Beginning \n6. Delete Node at the End "
-                "\n7. Delete node at a location. \n\nEnter your Choice: ";
+                "\n7. Delete node at a location. \n8. Reverse. \n9. Search. \n10. Exit. \n\nEnter your Choice: ";
         cin >> ch;
 
         switch (ch) {
@@ -305,6 +417,17 @@ int main() {
             case 7:
                 obj.del_at();
                 break;
+
+            case 8:
+                obj.reverse();
+                break;
+
+            case 9:
+                obj.search();
+                break;
+
+            case 10:
+                cout<<"\nExiting..."; exit(0);
 
             default: cout<<"\n Choose a Valid Option.";
         }
