@@ -245,7 +245,7 @@ void doubleLL::insert_at() {
             temp->next = ptr;
             /*the 'next' pointer of the node behind the newly inserted node, 'ptr', should point to the node
              * ahead of it. In this case, the node ahead of 'temp' is 'ptr', thus we set the 'next' of 'temp'
-             * to point to 'ptr'.*/
+             * to point to 'ptr'..*/
 
             do
             {
