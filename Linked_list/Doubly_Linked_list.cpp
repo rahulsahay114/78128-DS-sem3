@@ -245,7 +245,7 @@ void doubleLL::insert_at() {
             temp->next = ptr;
             /*the 'next' pointer of the node behind the newly inserted node, 'ptr', should point to the node
              * ahead of it. In this case, the node ahead of 'temp' is 'ptr', thus we set the 'next' of 'temp'
-             * to point to 'ptr'..*/
+             * to point to 'ptr'.*/
 
             do
             {
@@ -264,9 +264,10 @@ void doubleLL::insert_at() {
 void doubleLL::del_begin() {
 
     char ans = 'y';
-    if(is_empty())
+    if(is_empty()) //checking if the list is empty or not
     {
         cout<<"\nList is Empty.";
+        return;
     }
 
     else
@@ -275,9 +276,16 @@ void doubleLL::del_begin() {
         {
             node *temp;
             temp = head;
+            //setting temp to the head, so we can delete it via temp.
+
             head = head->next;
+            //since the first node wil be deleted, the head will shift to the next node to which 'head->next' points
+
             head->prev = NULL;
+            //setting the new head's 'prev' pointer to NULL, as the head's 'prev' is always NULL.
+
             delete(temp);
+            //deleting the first node of the list, 'temp' was set to it.
 
             do
             {
@@ -291,6 +299,152 @@ void doubleLL::del_begin() {
             }while(!isalpha(ans));
         }while(tolower(ans) == 'y');
     }
+}
+
+void doubleLL::del_end() {
+
+    if(is_empty()) //checking list empty condition
+    {
+        cout<<"\nList is Empty.";
+        return;
+    }
+
+    else
+    {
+        node *temp;
+        temp = head;
+
+        if(head->next == head->prev) //if only one node
+        {
+            delete(temp);
+            head = NULL;
+        }
+
+        else
+        {
+            while(temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+
+            node *temp1 = temp->prev;
+            temp1->next = NULL;
+
+            delete(temp);
+        }
+        cout<<"Deleted"<<endl;
+    }
+}
+
+void doubleLL::del_at() {
+
+    if(is_empty())
+    {
+        cout<<"\nList is empty";
+        return;
+    }
+
+    else
+    {
+        int pos;
+        cout<<"\nEnter position to delete: ";
+        cin>>pos;
+
+        node *temp;
+        temp = head;
+
+        if(head->next == head->prev) //if only one node
+        {
+            delete(temp);
+            head = NULL;
+        }
+
+        else //if more than one node in the list
+        {
+            int flag = 0;
+
+            while(flag != pos-1)
+            {
+                temp = temp->next;
+                flag++;
+            } //at the end of the loop, temp will be at the node behind the node we want to delete.
+
+            node *temp1;
+            temp1 = temp->next;
+            //temp1 will point to the node we want to delete, i.e 'temp->next' which points to the node ahead of temp.
+
+            temp->next = temp1->next;
+            /*resetting pointers accordingly. temp1 will be deleted so temp's 'next' should point to the node which will
+            be ahead of it after deletion of temp1, i.e 'temp1->next'.*/
+
+            temp1->next->prev = temp;
+            //the 'prev' of the node ahead of temp1 should point to the node
+            // that'll be behind it after deletion of temp1, i.e 'temp'.
+
+            delete(temp1);
+            //deleting the node temp1.
+        }
+        cout<<"Deleted."<<endl;
+    }
+}
+
+void doubleLL::reverse() {
+
+    if(is_empty())
+    {
+        cout<<"\nList is empty";
+        return;
+    }
+
+    else
+    {
+        node *temp = NULL, *curr;
+        curr = head;
+
+        while(curr != NULL)
+        {
+            temp = curr->prev;
+            curr->prev = curr->next;
+            curr->next = temp;
+            curr = curr->prev;
+        }
+
+        if(temp != NULL)
+        {
+            head = temp->prev;
+        }
+    }
+
+}
+
+void doubleLL::search() {
+
+    if (is_empty())
+    {
+        cout<<"\nList is empty.";
+        return;
+    }
+
+    else
+    {
+        int key, pos=0, flag=0;
+        cout<<"\nEnter Key to search: ";
+        cin>>key;
+
+        node *temp = head;
+        while(temp != NULL)
+        {
+            if(key == temp->data)
+            {
+                pos = flag;
+                break;
+            }
+            temp = temp->next;
+            flag++;
+        }
+        cout<<key<<" found at: "<<pos+1;
+    }
+
 }
 
 
@@ -328,15 +482,37 @@ int main()
                 obj.del_begin();
                 break;
 
+            case 6:
+                obj.del_end();
+                break;
+
+            case 7:
+                obj.del_at();
+                break;
+
+            case 8:
+                obj.reverse();
+                break;
+
+            case 9:
+                obj.search();
+                break;
+
             case 10:
                 cout<<"\nExiting..."; exit(0);
 
             default: cout<<"Choose a Valid Option.";
         }
 
-        cout << "\n Menu?(y/n)";
-        cin >> ans;
+        do {
+            cout << "\n Menu?(y/n)";
+            cin >> ans;
 
+            if(!isalpha(ans))
+            {
+                cout<<"Enter a valid option: ";
+            }
+        }while(!isalpha(ans));
     } while (tolower(ans) == 'y');
 
     return 0;
