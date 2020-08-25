@@ -121,7 +121,7 @@ void stack<t>::display() {
 
     else
     {
-        for(int i=0; i<=top; i++)
+        for(int i=top; i >= 0; i--)
         {
             cout<<arr[i]<<" ";
         }
