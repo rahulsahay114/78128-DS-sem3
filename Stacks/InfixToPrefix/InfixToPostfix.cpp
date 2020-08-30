@@ -45,7 +45,7 @@ stack<char> postfix(stack<char> &obj, string &exp)
 {
     stack<char> postfix; node<char>* temp = obj.top;
 
-    char symbols[exp.length()-1]; int top=-1;
+    char symbols[exp.length()]; int top=-1;
 
     while(temp->val != '\0')
     {
@@ -62,18 +62,32 @@ stack<char> postfix(stack<char> &obj, string &exp)
                 {
                     postfix.push(temp->val); //push that operator into the postfix expression.
                     top--; //and pop that element off the stack.
+
+                    if(top == -1)
+                    {
+                        symbols[++top] = temp->val;
+                    }
                 }
 
                 else if(precedence(symbols[top]) >= precedence(temp->val)) //if operator with less precedence encountered
                 {
-                    do
-                    {
+                     do{
                         postfix.push(symbols[top]);
                         top--;
+                        if(top == -1)
+                        {
+                            break;
+                        }
+                    }while(precedence(symbols[top]) <= precedence((temp->val)));
 
-                    }while(precedence(symbols[top]) < precedence((temp->val)));
+                    if(top == -1)
+                    {
+                        symbols[++top] = temp->val;
+                    }
 
-                    symbols[top] = temp->val;
+                    else{
+                        symbols[++top] = temp->val;
+                    }
                 }
 
                 else
@@ -112,9 +126,11 @@ int main() {
 
     for(int i= sizeof(exp)-1; i>=0; i--)
     {
-        //cout<<exp[i]<<endl;
+        //cout<<exp[i];
         obj.push(exp[i]);
     }
+
+    cout<<endl;
 
     stack<char> ans = postfix(obj, exp); //ans is an object of 'stack' thus contains the linked list.
 
@@ -130,7 +146,7 @@ int main() {
 
     }
 
-    for(int j=sizeof(display)-1; j>=0; j--)
+    for(int j=sizeof(display); j>=0; j--)
     {
         cout<<display[j];
     }
