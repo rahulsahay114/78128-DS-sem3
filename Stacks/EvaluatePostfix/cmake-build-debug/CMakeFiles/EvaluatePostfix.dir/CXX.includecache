@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/rahulsahay/Desktop/C++/EvaluatePostfix/main.cpp
+iostream
+-
+stack.h
+/Users/rahulsahay/Desktop/C++/EvaluatePostfix/stack.h
+string
+-
+
+/Users/rahulsahay/Desktop/C++/EvaluatePostfix/stack.h
+iostream
+-
+
