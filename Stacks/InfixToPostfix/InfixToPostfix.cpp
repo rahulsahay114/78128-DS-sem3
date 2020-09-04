@@ -80,14 +80,7 @@ stack<char> postfix(stack<char> &obj, string &exp)
                         }
                     }while(precedence(symbols[top]) <= precedence((temp->val)));
 
-                    if(top == -1)
-                    {
-                        symbols[++top] = temp->val;
-                    }
-
-                    else{
-                        symbols[++top] = temp->val;
-                    }
+                    symbols[++top] = temp->val;
                 }
 
                 else
