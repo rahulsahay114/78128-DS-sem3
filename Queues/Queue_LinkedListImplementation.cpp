@@ -111,6 +111,7 @@ void queue<t>::dequeue() {
     else if (top == rear) //one item
     {
         top = top->next;
+        rear = rear->next;
     }
 
     else
@@ -119,6 +120,7 @@ void queue<t>::dequeue() {
         top = top->next;
         delete(temp);
     }
+
     cout<<"Deleted.";
 }
 
@@ -153,6 +155,7 @@ void queue<t>::clear() {
         delete(temp);
     }
 
+    //to indicate queue empty condition, we set top and rear to null.
     top = nullptr;
     rear = nullptr;
 }
