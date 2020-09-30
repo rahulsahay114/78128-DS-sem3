@@ -19,9 +19,11 @@ public:
 
     void insert();
     void search(int);
+    void rec_preorder(node*);
+    void rec_postorder(node*);
 };
 
-void bst ::insert() {
+void bst::insert() {
 
     char ans = 'y';
     while(ans == 'y')
@@ -137,20 +139,81 @@ void bst::search(int key)
                 cout<<"Key Found!";
                 break;
             }
+
+            if(temp == NULL)
+            {
+                cout<<"Key not Found."; break;
+            }
         }
 
     }
 }
 
+void bst::rec_preorder(node* ptr) {
+
+    if(ptr == NULL) //if node is a leaf then return control to upper recursion
+        return;
+
+    cout<<ptr->val<<" "; //print out the value
+
+    rec_preorder(ptr->left); //left subtree traversed recursively
+
+    rec_preorder(ptr->right); //right subtree traversed recursively
+}
+
+void bst::rec_postorder(node* ptr) {
+
+    if(ptr == NULL)
+        return;
+
+    rec_postorder(ptr->left);
+
+    rec_postorder(ptr->right);
+
+    cout<<ptr->val<<" ";
+}
+
 int main() {
 
     bst obj;
-    obj.insert();
 
-    int k=0;
-    cout<<"\nEnter value to search: ";
-    cin>>k;
-    obj.search(k);
+    int ch, k=0;
+    char ans = 'y';
+
+    do {
+
+        cout<<"\nMENU.";
+        cout<<"\n1. Insert. \n2. Search a Node. \n3. Recursive Preorder. \n4. Recursive Postorder";
+        cout<<"\n\nEnter your choice: ";
+        cin>>ch;
+
+        switch(ch)
+        {
+            case 1:
+                obj.insert();
+                break;
+
+            case 2:
+                cout<<"\nEnter value to search: ";
+                cin>>k;
+                obj.search(k);
+                break;
+
+            case 3:
+                obj.rec_preorder(obj.root);
+                break;
+
+            case 4:
+                obj.rec_postorder(obj.root);
+                break;
+
+            default: cout<<"\nInvalid!"; break;
+        }
+
+        cout<<"\nMenu(y/n): ";
+        cin>>ans;
+
+    }while(ans == 'y');
 
     return 0;
 }
