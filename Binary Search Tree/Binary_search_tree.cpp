@@ -18,6 +18,7 @@ public:
     }
 
     void insert();
+    void search(int);
 };
 
 void bst ::insert() {
@@ -32,14 +33,15 @@ void bst ::insert() {
         if(root == NULL) //empty tree
         {
             root = new node;
-            root->val = temp;
+            root->val = temp;  //root node given the value entered by user
             root->left = NULL;
             root->right = NULL;
         }
 
         else if (root->right == NULL || root->left == NULL) //tree has only a root value
         {
-            node* ptr = new node;
+            node* ptr = new node; //node to be inserted
+
             ptr->val = temp;
             ptr->right = ptr->left = NULL;
 
@@ -102,10 +104,53 @@ void bst ::insert() {
 
 }
 
+void bst::search(int key)
+{
+    if(key == root->val)
+    {
+        cout<<"Key Found!";
+        return;
+    }
+
+    else
+    {
+        node* temp;
+        temp = root;
+
+        int flag = -1;
+
+        while(flag != 1)
+        {
+            if(key < temp->val )
+            {
+                temp = temp->left;
+            }
+
+            else if(key > temp->val)
+            {
+                temp = temp->right;
+            }
+
+            else if(temp->val == key)
+            {
+                flag = 1; //found
+                cout<<"Key Found!";
+                break;
+            }
+        }
+
+    }
+}
+
 int main() {
 
     bst obj;
     obj.insert();
+
+    int k=0;
+    cout<<"\nEnter value to search: ";
+    cin>>k;
+    obj.search(k);
 
     return 0;
 }
