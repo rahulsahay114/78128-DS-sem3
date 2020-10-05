@@ -1,4 +1,5 @@
 #include <iostream>
+#include "stack.h"
 using namespace std;
 
 struct node {
@@ -21,6 +22,10 @@ public:
     void search(int);
     void rec_preorder(node*);
     void rec_postorder(node*);
+    void rec_inorder(node*);
+    void itr_preorder();
+    void itr_inorder();
+    void itr_postorder();
 };
 
 void bst::insert() {
@@ -173,6 +178,96 @@ void bst::rec_postorder(node* ptr) {
     cout<<ptr->val<<" ";
 }
 
+void bst::rec_inorder(node * ptr) {
+
+    if(ptr == NULL)
+        return;
+
+    rec_inorder(ptr->left);
+
+    cout<<ptr->val<<" ";
+
+    rec_inorder(ptr->right);
+}
+
+void bst::itr_preorder() {
+
+    stack<node*> obj; //making the stack of type 'node*' (pointer node) as we'll be pushing pointers into the stack.
+
+    obj.push(root); //pushing the root node
+
+
+    while(obj.isempty() == false)
+    {
+        nodee<node*>* ptr = obj.top;
+        //nodee is the node in stack.h, added an extra 'e' to remove ambiguity as 'node' is also defined here.
+
+        cout<<ptr->val->val<<" "; //first 'val' stores the 'node*' object and the second 'val' is the actual value stored in that 'node*' object.
+        obj.pop(); //popping after printing.
+
+
+        if(ptr->val->right)
+            obj.push(ptr->val->right);
+
+        if(ptr->val->left)
+            obj.push(ptr->val->left);
+    }
+}
+
+void bst::itr_postorder() {
+
+    stack<node*> s1; //stack 1
+    stack<node*> s2; //stack 2
+
+    s1.push(root); //push root into stack 1
+
+    while(s1.isempty() == false)
+    {
+        nodee<node*>* x = s1.top;
+        s1.pop(); //popping element from s1.
+
+        s2.push(x->val); //pushing the popped element from stack 1 to stack 2
+        //here 'val' is a whole 'node*' with left, right and a int 'val' value.
+        //since stack is of type 'node*' therefore we can only push whole 'node*' pointers into it.
+
+        if(x->val->left)
+            s1.push(x->val->left); //first, pushing the left child of the popped node, if present.
+
+        if(x->val->right)
+            s1.push(x->val->right); //then pushing the right child of the popped node, if present.
+    }
+
+    //stack 2 will have the elements of the BST in postorder form.
+    while(s2.top->next != NULL)
+    {
+        cout<<s2.top->val->val<<" ";
+        s2.top = s2.top->next;
+    }
+
+}
+
+void bst::itr_inorder() {
+
+    stack<node*> s; //empty stack
+
+    node* ptr = root;
+    s.push(ptr);
+
+    while(ptr != NULL || s.isempty() == false)
+    {
+        while(ptr != NULL)
+        {
+            s.push(ptr);
+            ptr = ptr->left;
+        }
+
+        ptr = s.top->val;
+        s.pop();
+
+        cout<<ptr->val;
+    }
+}
+
 int main() {
 
     bst obj;
@@ -183,7 +278,9 @@ int main() {
     do {
 
         cout<<"\nMENU.";
-        cout<<"\n1. Insert. \n2. Search a Node. \n3. Recursive Preorder. \n4. Recursive Postorder";
+        cout<<"\n1. Insert. \n2. Search a Node. \n3. Recursive Preorder. \n4. Recursive Postorder \n5. Recursive Inorder"
+              "\n6. Iterative Preorder. \n7. Iterative Postorder. \n8. Iterative Inorder.";
+
         cout<<"\n\nEnter your choice: ";
         cin>>ch;
 
@@ -207,6 +304,22 @@ int main() {
                 obj.rec_postorder(obj.root);
                 break;
 
+            case 5:
+                obj.rec_inorder(obj.root);
+                break;
+
+            case 6:
+                obj.itr_preorder();
+                break;
+
+            case 7:
+                obj.itr_postorder();
+                break;
+
+            case 8:
+                obj.itr_inorder();
+                break;
+
             default: cout<<"\nInvalid!"; break;
         }
 
@@ -217,3 +330,7 @@ int main() {
 
     return 0;
 }
+
+//9 5 15 6 3 14 17
+//9 5 3 6 15 14 17 pre
+//3 6 5 14 17 15 9 post
