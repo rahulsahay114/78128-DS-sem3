@@ -1,5 +1,7 @@
 #include <iostream>
 #include "stack.h"
+#include "queue.h"
+
 using namespace std;
 
 struct node {
@@ -26,6 +28,7 @@ public:
     void itr_preorder();
     void itr_inorder();
     void itr_postorder();
+    void bfs();
 };
 
 void bst::insert() {
@@ -248,10 +251,9 @@ void bst::itr_postorder() {
 
 void bst::itr_inorder() {
 
-    stack<node*> s; //empty stack
+    stack<node*> s; //empty stack, with elements of type 'node*'
 
-    node* ptr = root;
-    s.push(ptr);
+    node* ptr = root; //set ptr as root
 
     while(ptr != NULL || s.isempty() == false)
     {
@@ -262,10 +264,46 @@ void bst::itr_inorder() {
         }
 
         ptr = s.top->val;
+        //'top' is of type 'nodee*'(node struct defined in 'stack.h')
+        // which is a node structure with element of type 'node*' in it as 'val'.
+        // Thus 'val' of type 'node*' in  'top' of type 'nodee*' contains the actual integer 'val'.
+
         s.pop();
 
-        cout<<ptr->val;
+        cout<<ptr->val<<" "; //actual integer 'val' being displayed
+
+        ptr = ptr->right;
     }
+}
+
+void bst::bfs() {
+
+    if (root == NULL)
+        return;
+
+    queue<node*> q;
+    //a queue of 'node*' (struct node pointer) therefore each 'val' of the queue will store a whole 'node*' object.
+    //thus each 'val' of the queue 'q' will have a 'val' ('node*' defined in this program) with it's own 'left', 'right',
+    //and 'val' (an integer).
+
+    q.enqueue(root); //push root into the queue.
+
+    while(q.is_empty() == false)
+    {
+        node_q<node*>* ptr = q.top;
+
+        cout<<ptr->val->val<<" ";
+
+        q.dequeue(); //pop from queue
+
+        if (ptr->val->left != NULL)
+            q.enqueue(ptr->val->left);
+
+        if (ptr->val->right != NULL)
+            q.enqueue(ptr->val->right);
+
+    }
+
 }
 
 int main() {
@@ -279,7 +317,8 @@ int main() {
 
         cout<<"\nMENU.";
         cout<<"\n1. Insert. \n2. Search a Node. \n3. Recursive Preorder. \n4. Recursive Postorder \n5. Recursive Inorder"
-              "\n6. Iterative Preorder. \n7. Iterative Postorder. \n8. Iterative Inorder.";
+              "\n6. Iterative Preorder. \n7. Iterative Postorder. \n8. Iterative Inorder. \n9. Level by level Traversal"
+              "\n10. Mirror Image. \n11. Count non-leaf, leaf and total nodes. \n12. Search and Replace.";
 
         cout<<"\n\nEnter your choice: ";
         cin>>ch;
@@ -318,6 +357,10 @@ int main() {
 
             case 8:
                 obj.itr_inorder();
+                break;
+
+            case 9:
+                obj.bfs();
                 break;
 
             default: cout<<"\nInvalid!"; break;
