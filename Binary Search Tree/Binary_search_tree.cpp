@@ -4,6 +4,10 @@
 
 using namespace std;
 
+int leaf = 0;
+int non_leaf = 0;
+int tot_nodes = 0;
+
 struct node {
     int val;
     node* left;
@@ -21,6 +25,8 @@ public:
     }
 
     void insert();
+    node* insert(node*, int);
+    node* newNode(int);
     void search(int);
     void rec_preorder(node*);
     void rec_postorder(node*);
@@ -29,6 +35,10 @@ public:
     void itr_inorder();
     void itr_postorder();
     void bfs();
+    void mirror(node*);
+    void count(node*);
+    node* delete_node(node*, int);
+    node* change_key(node*, int old_val, int new_val);
 };
 
 void bst::insert() {
@@ -306,11 +316,136 @@ void bst::bfs() {
 
 }
 
+void bst:: mirror(node *n)
+{
+    //for a better understanding do a dry run.
+
+    node *ptr = n; //node for traversal
+
+    if(ptr == NULL) //base case.
+        return;
+
+    else
+    {
+        //recursively swap the left subtree first and then the right subtree.
+        mirror(ptr->left);
+        mirror(ptr->right);
+
+        //swapping the terms
+        node* temp = ptr->left;
+        ptr->left = ptr->right;
+        ptr->right = temp;
+    }
+}
+
+void bst::count(node* n)
+{
+    node* ptr = n;
+
+    if(ptr->left == NULL && ptr->right == NULL)
+    {
+        leaf++;
+        return;
+    }
+
+    else
+    {
+        non_leaf++;
+        count(ptr->left);
+        count(ptr->right);
+    }
+}
+
+node* bst::delete_node(node *n, int key) { //done via deletion by copying
+
+    node* ptr = n;
+
+    if(ptr == NULL) //base case
+        return ptr;
+
+    //if key to be deleted is smaller than the 'val' at 'ptr' then it lies in the left subtree of 'ptr'
+    if(key < ptr->val)
+        delete_node(ptr->left, key); //moving to the left subtree of 'ptr'
+
+    //if key to be deleted is greater than the 'val' at 'ptr' then it lies in the right subtree of 'ptr'
+    else if(key > ptr->val)
+        delete_node(ptr->right, key); //moving to the left subtree of 'ptr'
+
+    else //key equal to the value at the node 'ptr'
+    {
+        //for nodes with only one child or no child
+        if(ptr->left == NULL)
+        {
+            node* temp = ptr->right; //temp will store the value of the right subtree of 'ptr'
+            delete ptr; //deleting the node which has the same key value as given by user
+            return temp; //returning 'temp' so we can use this node to run insert from.
+        }
+
+        if(ptr->right == NULL)
+        {
+            node* temp = ptr->left; //temp will store the value of the left subtree of 'ptr'
+            delete ptr; //deleting the node which has the same key value as given by user
+            return temp; //returning 'temp' so we can use this node to run insert from.
+        }
+
+        // node with two children: getting the inorder successor (smallest in the right subtree)
+        node *temp = ptr->right;
+
+        while (temp->left != NULL) //loop down to find the leftmost leaf in the right subtree of ptr as temp = ptr->right.
+        {
+            temp = temp->left;
+        }
+
+        ptr->val = temp->val; //setting the 'val' of 'ptr' to that of the leftmost leaf's in the right subtree of 'ptr'.
+
+        ptr->right = delete_node(ptr->right, temp->val);
+        //deleting the leftmost leaf in the right subtree of ptr.
+    }
+    return ptr;
+}
+
+node *bst::change_key(node *root, int old_val, int new_val) {
+
+    // First delete old key value
+    root = delete_node(root, old_val);
+
+    // Then insert new key value
+    root = insert(root, new_val);
+
+    // Return new root
+    return root;
+}
+
+node *bst::insert(node *node, int key) {
+
+    /* If the tree is empty, return a new node */
+    if (node == NULL)
+        return newNode(key);
+
+    /* Otherwise, recur down the tree */
+    if (key < node->val)
+        node->left = insert(node->left, key);
+
+    else
+        node->right = insert(node->right, key);
+
+    /* return the (unchanged) node pointer */
+    return node;
+}
+
+node* bst:: newNode(int item)
+{
+    node *temp = new node;
+    temp->val = item;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
 int main() {
 
     bst obj;
 
-    int ch, k=0;
+    int ch, k=0, old_value =0, new_value=0;
     char ans = 'y';
 
     do {
@@ -318,7 +453,8 @@ int main() {
         cout<<"\nMENU.";
         cout<<"\n1. Insert. \n2. Search a Node. \n3. Recursive Preorder. \n4. Recursive Postorder \n5. Recursive Inorder"
               "\n6. Iterative Preorder. \n7. Iterative Postorder. \n8. Iterative Inorder. \n9. Level by level Traversal"
-              "\n10. Mirror Image. \n11. Count non-leaf, leaf and total nodes. \n12. Search and Replace.";
+              "\n10. Mirror Image. \n11. Count non-leaf, leaf and total nodes. \n12. Search and Replace."
+              "\n13. Deletion by copying. \n14. Deletion by merging. \n15. Height of the Tree.";
 
         cout<<"\n\nEnter your choice: ";
         cin>>ch;
@@ -362,6 +498,35 @@ int main() {
             case 9:
                 obj.bfs();
                 break;
+
+            case 10:
+                obj.mirror(obj.root);
+                cout<<"\nConverted to Mirror Tree! \nInorder Traversal of New Tree: ";
+                obj.rec_inorder(obj.root);
+                break;
+
+            case 11:
+                obj.count(obj.root);
+                tot_nodes = leaf + non_leaf;
+                cout<<"Leaf Nodes: "<<leaf<<"\nNon-Leaf Nodes: "<<non_leaf<<"\nTotal Nodes: "<<tot_nodes;
+                break;
+
+            case 12:
+                cout<<"\nEnter Old Value: ";
+                cin>>old_value;
+                cout<<"Enter New Value: ";
+                cin>>new_value;
+
+                obj.change_key(obj.root, old_value, new_value);
+                break;
+
+            case 13:
+                cout<<"\nEnter Value to delete: ";
+                cin>>new_value;
+                obj.delete_node(obj.root, new_value);
+
+            case 14:
+                
 
             default: cout<<"\nInvalid!"; break;
         }
