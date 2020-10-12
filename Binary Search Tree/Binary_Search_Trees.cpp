@@ -37,6 +37,7 @@ public:
     void bfs();
     void mirror(node*);
     void count(node*);
+    int height(node* node);
     node* delete_node(node*, int);
     node* change_key(node*, int old_val, int new_val);
 };
@@ -441,11 +442,29 @@ node* bst:: newNode(int item)
     return temp;
 }
 
+int bst::height(node* node)
+{
+    if (node == NULL)
+        return 0;
+    else
+    {
+        /* compute the depth of each subtree */
+        int l_height = height(node->left);
+        int r_height = height(node->right);
+
+        /* using the larger one */
+        if (l_height > r_height)
+            return(l_height + 1);
+        else
+            return(r_height + 1);
+    }
+}
+
 int main() {
 
     bst obj;
 
-    int ch, k=0, old_value =0, new_value=0;
+    int ch, k=0, old_value =0, new_value=0, h=0;
     char ans = 'y';
 
     do {
@@ -525,8 +544,11 @@ int main() {
                 cin>>new_value;
                 obj.delete_node(obj.root, new_value);
 
-            case 14:
-                
+            case 15:
+                h = obj.height(obj.root);
+                cout<<"\nHeight: "<<h;
+                break;
+
 
             default: cout<<"\nInvalid!"; break;
         }
