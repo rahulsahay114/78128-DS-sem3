@@ -34,7 +34,10 @@ public:
     void insert_key(int k);
     void buildmaxheap(int*);
     void increasekey(int* heap, int i, int key);
+    void heapsort(int*);
 
+    int heap_max();
+    int extract_max();
 };
 
 void maxheap::display()
@@ -96,6 +99,7 @@ void maxheap::insert_key(int k) {
     }
 }
 
+//to increase the value of a node to 'key' at a given index 'i' in the heap 'heap'.
 void maxheap::increasekey(int *heap, int i, int key) {
 
     i--;
@@ -124,6 +128,29 @@ void maxheap::increasekey(int *heap, int i, int key) {
     }
 }
 
+int maxheap::heap_max() {
+
+    return heap[0];
+}
+
+int maxheap::extract_max() {
+
+    if(heap_size < 0)
+    {
+        cout<<"Error, Underflow.";
+        return -1;
+    }
+
+    int max = heap[0];
+
+    heap[0] = heap[heap_size-1]; //'heap_size-1' last index in the 'heap' array.
+    heap_size--;
+    max_heapify(heap, 0);
+
+    return max;
+}
+
+
 int main() {
 
     maxheap heap(10);
@@ -139,11 +166,17 @@ int main() {
     heap.insert_key(9);
     heap.insert_key(7);
 
-    heap.display();
+    cout<<"Original max_heap: "; heap.display();
 
     heap.increasekey(heap.heap, 4, 11);
 
-    cout<<'\n';
+    cout<<"\n\nAfter increasekey(heap, 4, 11): ";
+    heap.display();
+
+    cout<<"\n\nHeap Maximum: "<<heap.heap_max();
+
+    cout<<"\n\nAfter extract_max(): ";
+    heap.extract_max();
     heap.display();
 
     return 0;
