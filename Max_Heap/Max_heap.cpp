@@ -56,10 +56,10 @@ void maxheap::max_heapify(int* heap, int i)
     //largest at the given index, then we change it the index value of either left or right in the following comparisons.
     int largest = i;
 
-    if(l <= heap_size && heap[l] > heap[i])
+    if(l <= heap_size && heap[l] > heap[largest])
         largest = l;
 
-    if(r <= heap_size && heap[r] > heap[i])
+    if(r <= heap_size && heap[r] > heap[largest])
         largest = r;
 
     if(largest != i)
@@ -143,17 +143,27 @@ int maxheap::extract_max() {
 
     int max = heap[0];
 
-    heap[0] = heap[heap_size-1]; //'heap_size-1' last index in the 'heap' array.
+    heap[0] = heap[heap_size-1]; //'heap_size-1' is the last index in the 'heap' array.
     heap_size--;
     max_heapify(heap, 0);
 
     return max;
 }
 
+void maxheap::heapsort(int *heap) {
+
+    for(int i=0; i<heap_size; i++)
+    {
+        int x = extract_max();
+        cout<<x<<" ";
+    }
+
+}
+
 
 int main() {
 
-    maxheap heap(10);
+    maxheap heap(10); //making a heap of 10 elements
 
     heap.insert_key(14);
     heap.insert_key(10);
@@ -168,9 +178,11 @@ int main() {
 
     cout<<"Original max_heap: "; heap.display();
 
-    heap.increasekey(heap.heap, 4, 11);
+    cout<<"\n\nAfter heapsort(): ";
+    heap.heapsort(heap.heap);
 
     cout<<"\n\nAfter increasekey(heap, 4, 11): ";
+    heap.increasekey(heap.heap, 4, 11);
     heap.display();
 
     cout<<"\n\nHeap Maximum: "<<heap.heap_max();
